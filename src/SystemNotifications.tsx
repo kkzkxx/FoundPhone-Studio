@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { AppArtwork } from "./AppArtwork";
 import type { Work } from "./schema";
 export function notificationContent(text: string, apps: Work["apps"]) {
-  const route = /^\[([a-z0-9_-]+)\]/i.exec(text);
+  const route = /^\[([a-z0-9_-]+)(?:\|([^\]]+))?\]/i.exec(text);
   const visibleText = route ? text.slice(route[0].length) : text;
   const separator = visibleText.search(/[:：]/);
   const sender = separator > 0 ? visibleText.slice(0, separator) : "信息";
@@ -13,6 +13,7 @@ export function notificationContent(text: string, apps: Work["apps"]) {
     title: sender,
     body: separator > 0 ? visibleText.slice(separator + 1) : visibleText,
     appId: route?.[1] ?? app?.id ?? "messages",
+    thread: route?.[2] ?? "",
   };
 }
 export function SystemNotifications({
@@ -24,7 +25,7 @@ export function SystemNotifications({
 }: {
   notices: string[];
   apps: Work["apps"];
-  onOpen: (appId?: string) => void;
+  onOpen: (appId?: string, thread?: string) => void;
   onDismiss: (index: number) => void;
   compact?: boolean;
 }) {
@@ -55,7 +56,7 @@ export function SystemNotifications({
                 if (info.offset.x < -80) onDismiss(index);
               }}
             >
-              <button className="notice-open" onClick={() => onOpen(n.appId)}>
+              <button className="notice-open" onClick={() => onOpen(n.appId, n.thread)}>
                 <span className="notice-app-art">
                   <AppArtwork id={n.appId} />
                 </span>
