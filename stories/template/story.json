@@ -3,7 +3,7 @@
   "id": "ice-cream-phone",
   "title": "冰淇淋不许吃",
   "description": "放学后的微信消息，以及一条突然出现的爸比通知。",
-  "revision": 5,
+  "revision": 6,
   "phone": {
     "owner": "郑ㅇㅇ",
     "date": "2026-11-09",
@@ -123,43 +123,12 @@
           "meta": {
             "quickReply": "放学了放学了，妈咪，我想吃冰淇淋"
           }
-        },
-        {
-          "id": "mom-icecream-reply",
-          "body": "好呀，妈咪给你带冰淇淋，等妈咪来接你哦。",
-          "senderId": "mom",
-          "time": "2026-11-09 16:22",
-          "hidden": true,
-          "unlock": "momReplySent"
-        }
-      ]
-    },
-    {
-      "id": "chat-dad",
-      "app": "wechat",
-      "title": "爸比",
-      "participants": [
-        "dad",
-        "owner"
-      ],
-      "messages": [
-        {
-          "id": "dad-first-message",
-          "body": "郑ㅇㅇ，不准吃冰淇淋，你这一周的零食次数已经没有了。",
-          "senderId": "dad",
-          "time": "2026-11-09 16:23",
-          "unlock": "momReplySent",
-          "meta": {
-            "quickReply": "你怎么知道的。。"
-          }
         }
       ]
     }
   ],
   "content": {},
-  "variables": {
-    "momReplySent": false
-  },
+  "variables": {},
   "events": [
     {
       "id": "lockscreen-mom-notice",
@@ -174,36 +143,6 @@
           "type": "notification",
           "key": "",
           "value": "[wechat|妈咪]妈咪：宝宝，放学了没有，妈咪去接你哦"
-        }
-      ],
-      "next": [],
-      "once": true,
-      "x": 0,
-      "y": 0
-    },
-    {
-      "id": "mom-reply-sent",
-      "label": "发送给妈咪的固定回复",
-      "type": "event",
-      "event": "sendMessage",
-      "target": "mom-first-message",
-      "conditions": [],
-      "logic": "and",
-      "actions": [
-        {
-          "type": "variable",
-          "key": "momReplySent",
-          "value": true
-        },
-        {
-          "type": "unlock",
-          "key": "mom-icecream-reply",
-          "value": true
-        },
-        {
-          "type": "notification",
-          "key": "",
-          "value": "[wechat|爸比]爸比：郑ㅇㅇ，不准吃冰淇淋，你这一周的零食次数已经没有了"
         }
       ],
       "next": [],
@@ -234,12 +173,8 @@
   ],
   "tests": [
     {
-      "name": "妈咪固定回复触发爸比通知",
+      "name": "发送给妈咪的消息后不触发任何回复",
       "steps": [
-        {
-          "event": "sendMessage",
-          "target": "mom-first-message"
-        },
         {
           "event": "testOnly",
           "target": "finish"
