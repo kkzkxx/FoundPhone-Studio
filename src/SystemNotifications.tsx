@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { AppArtwork } from "./AppArtwork";
 import type { Work } from "./schema";
 export function notificationContent(text: string, apps: Work["apps"]) {
-  const route = /^\\[([a-z0-9_-]+)\\]/i.exec(text);
+  const route = /^\[([a-z0-9_-]+)\]/i.exec(text);
   const visibleText = route ? text.slice(route[0].length) : text;
   const separator = visibleText.search(/[:：]/);
   const sender = separator > 0 ? visibleText.slice(0, separator) : "信息";
