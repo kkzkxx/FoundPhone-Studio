@@ -4130,3 +4130,10 @@
 .catalog-slot[hidden] {
   display: none;
 }
+
+/* Story-authored fixed replies in WeChat conversations. */
+.wx-quick-reply { display:flex; align-items:center; gap:8px; padding:9px 12px; border-top:1px solid rgba(0,0,0,.07); background:#f7f8f7; }
+.wx-quick-reply-choice { flex:1; min-width:0; padding:10px 12px; border:1px solid #dce6de; border-radius:12px; background:#fff; color:#303a32; text-align:left; font-size:12px; line-height:1.45; }
+.wx-quick-reply-send { flex:0 0 auto; padding:10px 16px; border:0; border-radius:12px; background:#07c160; color:#fff; font-size:12px; font-weight:700; }
+.dark-phone .wx-quick-reply { border-color:#333; background:#202421; }
+.dark-phone .wx-quick-reply-choice { border-color:#465149; background:#2a302c; color:#f4f7f4; }
