@@ -3,7 +3,7 @@
   "id": "ice-cream-phone",
   "title": "冰淇淋不许吃",
   "description": "放学后的微信消息，以及一条突然出现的爸比通知。",
-  "revision": 7,
+  "revision": 8,
   "phone": {
     "owner": "郑ㅇㅇ",
     "date": "2026-11-09",
@@ -125,10 +125,34 @@
           }
         }
       ]
+    },
+    {
+      "id": "chat-dad",
+      "app": "wechat",
+      "title": "爸比",
+      "participants": [
+        "dad",
+        "owner"
+      ],
+      "messages": [
+        {
+          "id": "dad-first-message",
+          "body": "郑ㅇㅇ，不准吃冰淇淋，你这一周的零食次数已经没有了。",
+          "senderId": "dad",
+          "time": "2026-11-09 16:23",
+          "hidden": true,
+          "unlock": "dadWarningSent",
+          "meta": {
+            "quickReply": "你怎么知道的。。"
+          }
+        }
+      ]
     }
   ],
   "content": {},
-  "variables": {},
+  "variables": {
+    "dadWarningSent": false
+  },
   "events": [
     {
       "id": "lockscreen-mom-notice",
@@ -143,6 +167,36 @@
           "type": "notification",
           "key": "",
           "value": "[wechat|妈咪]妈咪：宝宝，放学了没有，妈咪去接你哦"
+        }
+      ],
+      "next": [],
+      "once": true,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "dad-warning-after-send",
+      "label": "发送想吃冰淇淋后弹出爸比消息",
+      "type": "event",
+      "event": "sendMessage",
+      "target": "mom-first-message",
+      "conditions": [],
+      "logic": "and",
+      "actions": [
+        {
+          "type": "variable",
+          "key": "dadWarningSent",
+          "value": true
+        },
+        {
+          "type": "unlock",
+          "key": "dad-first-message",
+          "value": true
+        },
+        {
+          "type": "notification",
+          "key": "",
+          "value": "[wechat|爸比]爸比：郑ㅇㅇ，不准吃冰淇淋，你这一周的零食次数已经没有了"
         }
       ],
       "next": [],
@@ -173,7 +227,7 @@
   ],
   "tests": [
     {
-      "name": "发送给妈咪的消息后不触发任何回复",
+      "name": "发送给妈咪的想吃冰淇淋消息后触发爸比通知",
       "steps": [
         {
           "event": "sendMessage",
@@ -184,7 +238,10 @@
           "target": "finish"
         }
       ],
-      "ending": "脚本校验完成"
+      "ending": "脚本校验完成",
+      "expectUnlocked": [
+        "dad-first-message"
+      ]
     }
   ]
 }
