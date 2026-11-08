@@ -56,6 +56,7 @@ import {
 import { getApp, type AppPlugin } from "./registry";
 import {
   initialRuntime,
+  makeItem,
   safeMedia,
   type Work,
   type Item,
@@ -453,7 +454,37 @@ function PhoneRuntime({
                   creator={creator}
                   state={s}
                   onRead={(id) => event("read", id)}
-                  onEdit={(item) => onEdit?.(app, item)}
+                  onSend={(thread, text, sourceId) => {
+                    const current = runtimeRef.current;
+                    const previous = current.messages.wechat ?? [];
+                    if (previous.some((item) => item.meta?.replyTo === sourceId))
+                      return;
+                    const reply = makeItem({
+                      id: `player-reply-${sourceId}`,
+                      title: thread,
+                      body: text,
+                      time: `${current.date || work.phone.date} ${current.time || work.phone.time}`,
+                      sender: work.phone.owner,
+                      outgoing: true,
+                      read: true,
+                      meta: { replyTo: sourceId },
+                    });
+                    update(
+                      dispatch(
+                        work,
+                        {
+                          ...current,
+                          messages: {
+                            ...current.messages,
+                            wechat: [...previous, reply],
+                          },
+                        },
+                        "sendMessage",
+                        sourceId,
+                      ),
+                    );
+                  }}
+                  onEdit={(item) => onEdit?.(app, item)
                   onAdd={() => onAdd?.(app)}
                   onBack={() => setApp("")}
                   onSettings={onSettings}
@@ -555,11 +586,10 @@ function PhoneRuntime({
                     <SystemNotifications
                       notices={s.notifications}
                       apps={work.apps}
-                      onOpen={() => {
+                      onOpen={(targetApp) => {
                         setPanel("");
                         if (locked) beginUnlock();
-                        else if (installedApps.some((a) => a.id === "messages"))
-                          open("messages");
+                        else open(targetApp || "messages");
                       }}
                       onDismiss={dismissNotice}
                     />
@@ -682,8 +712,9 @@ function PhoneRuntime({
             <button
               className="device-banner"
               onClick={() => {
+                const targetApp = notificationContent(banner, work.apps).appId;
                 setBanner("");
-                setPanel("notification");
+                open(targetApp);
               }}
             >
               <AppIcon
@@ -861,6 +892,7 @@ function AppContent({
   creator,
   state,
   onRead,
+  onSend,
   onEdit,
   onAdd,
   onBack,
@@ -874,6 +906,7 @@ function AppContent({
   creator: boolean;
   state: Runtime;
   onRead: (id: string) => void;
+  onSend: (thread: string, text: string, sourceId: string) => void;
   onEdit: (item: Item) => void;
   onAdd: () => void;
   onBack: () => void;
@@ -995,6 +1028,7 @@ function AppContent({
               items={shown}
               creator={creator}
               onRead={onRead}
+              onSend={onSend}
               onItem={read}
               onAdd={onAdd}
               onBack={onBack}
