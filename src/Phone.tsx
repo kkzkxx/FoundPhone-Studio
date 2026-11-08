@@ -484,7 +484,7 @@ function PhoneRuntime({
                       ),
                     );
                   }}
-                  onEdit={(item) => onEdit?.(app, item)
+                  onEdit={(item) => onEdit?.(app, item)}
                   onAdd={() => onAdd?.(app)}
                   onBack={() => setApp("")}
                   onSettings={onSettings}
