@@ -42,6 +42,7 @@ export type SkinProps = {
   items: Item[];
   creator: boolean;
   onRead: (id: string) => void;
+  onSend?: (thread: string, text: string, sourceId: string) => void;
   onItem: (i: Item) => void;
   onAdd: () => void;
   onBack: () => void;
@@ -163,6 +164,10 @@ export function WeChatSkin(p: SkinProps) {
     "readThreads",
     [],
   );
+  const [selectedReply, setSelectedReply] = useState<{
+    text: string;
+    sourceId: string;
+  } | null>(null);
   const conversations = [
     ...new Set(
       p.items
@@ -175,6 +180,12 @@ export function WeChatSkin(p: SkinProps) {
   ];
   const posts = p.items.filter(
     (i) => i.folder === "朋友圈" || i.kind === "post",
+  );
+  const threadItems = p.items.filter((i) => i.title === p.thread);
+  const quickReplySource = [...threadItems].reverse().find(
+    (i) =>
+      i.meta?.quickReply &&
+      !threadItems.some((message) => message.meta?.replyTo === i.id),
   );
   return (
     <div
@@ -283,6 +294,38 @@ export function WeChatSkin(p: SkinProps) {
             onItem={p.onItem}
             onRead={p.onRead}
           />
+          {quickReplySource?.meta?.quickReply && (
+            <div className="wx-quick-reply">
+              <button
+                type="button"
+                className="wx-quick-reply-choice"
+                onClick={() =>
+                  setSelectedReply({
+                    text: quickReplySource.meta.quickReply,
+                    sourceId: quickReplySource.id,
+                  })
+                }
+              >
+                我：{quickReplySource.meta.quickReply}
+              </button>
+              {selectedReply?.sourceId === quickReplySource.id && (
+                <button
+                  type="button"
+                  className="wx-quick-reply-send"
+                  onClick={() => {
+                    p.onSend?.(
+                      p.thread,
+                      selectedReply.text,
+                      selectedReply.sourceId,
+                    );
+                    setSelectedReply(null);
+                  }}
+                >
+                  发送
+                </button>
+              )}
+            </div>
+          )}
           <Compose creator={p.creator} onAdd={p.onAdd} />
         </>
       ) : moments ? (
