@@ -586,10 +586,26 @@ function PhoneRuntime({
                     <SystemNotifications
                       notices={s.notifications}
                       apps={work.apps}
-                      onOpen={(targetApp) => {
+                      onOpen={(targetApp, targetThread) => {
                         setPanel("");
                         if (locked) beginUnlock();
-                        else open(targetApp || "messages");
+                        else {
+                          const appId = targetApp || "messages";
+                          if (targetThread) {
+                            const current = runtimeRef.current;
+                            update({
+                              ...current,
+                              ui: {
+                                ...current.ui,
+                                [appId]: {
+                                  ...current.ui?.[appId],
+                                  openThread: targetThread,
+                                },
+                              },
+                            });
+                          }
+                          open(appId);
+                        }
                       }}
                       onDismiss={dismissNotice}
                     />
@@ -712,9 +728,22 @@ function PhoneRuntime({
             <button
               className="device-banner"
               onClick={() => {
-                const targetApp = notificationContent(banner, work.apps).appId;
+                const notice = notificationContent(banner, work.apps);
                 setBanner("");
-                open(targetApp);
+                if (notice.thread) {
+                  const current = runtimeRef.current;
+                  update({
+                    ...current,
+                    ui: {
+                      ...current.ui,
+                      [notice.appId]: {
+                        ...current.ui?.[notice.appId],
+                        openThread: notice.thread,
+                      },
+                    },
+                  });
+                }
+                open(notice.appId);
               }}
             >
               <AppIcon
@@ -916,6 +945,13 @@ function AppContent({
 }) {
   const [detail, setDetail] = useState<Item | null>(null);
   const [thread, setThread] = useState("");
+  useEffect(() => {
+    const pendingThread = state.ui?.[app.id]?.openThread;
+    if (typeof pendingThread === "string" && pendingThread) {
+      setThread(pendingThread);
+      onUi?.("openThread", "");
+    }
+  }, [state.ui?.[app.id]?.openThread, app.id]);
   const [tab, setTab] = useState(app.tabs[0]);
   const [q, setQ] = useState("");
   const [pw, setPw] = useState("");
