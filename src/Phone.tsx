@@ -1061,7 +1061,7 @@ function AppContent({
               ui={state.ui?.[app.id]}
               onUi={creator ? undefined : onUi}
               name={name}
-              items={shown}
+              items={app.id === "wechat" ? items.filter((i) => visible(i, state)) : shown}
               creator={creator}
               onRead={onRead}
               onSend={onSend}
