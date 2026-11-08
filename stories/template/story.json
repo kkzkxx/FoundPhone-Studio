@@ -172,7 +172,7 @@
         {
           "type": "notification",
           "key": "",
-          "value": "[wechat]妈咪：宝宝，放学了没有，妈咪去接你哦"
+          "value": "[wechat|妈咪]妈咪：宝宝，放学了没有，妈咪去接你哦"
         }
       ],
       "next": [],
@@ -197,7 +197,7 @@
         {
           "type": "notification",
           "key": "",
-          "value": "[wechat]爸比：郑ㅇㅇ，不准吃冰淇淋，你这一周的零食次数已经没有了"
+          "value": "[wechat|爸比]爸比：郑ㅇㅇ，不准吃冰淇淋，你这一周的零食次数已经没有了"
         }
       ],
       "next": [],
