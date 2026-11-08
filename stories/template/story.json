@@ -3,7 +3,7 @@
   "id": "ice-cream-phone",
   "title": "冰淇淋不许吃",
   "description": "放学后的微信消息，以及一条突然出现的爸比通知。",
-  "revision": 6,
+  "revision": 7,
   "phone": {
     "owner": "郑ㅇㅇ",
     "date": "2026-11-09",
@@ -176,14 +176,15 @@
       "name": "发送给妈咪的消息后不触发任何回复",
       "steps": [
         {
+          "event": "sendMessage",
+          "target": "mom-first-message"
+        },
+        {
           "event": "testOnly",
           "target": "finish"
         }
       ],
-      "ending": "脚本校验完成",
-      "expectUnlocked": [
-        "mom-icecream-reply"
-      ]
+      "ending": "脚本校验完成"
     }
   ]
 }
