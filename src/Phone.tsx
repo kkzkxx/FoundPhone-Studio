@@ -951,7 +951,7 @@ function AppContent({
       setThread(pendingThread);
       onUi?.("openThread", "");
     }
-  }, [state.ui?.[app.id]?.openThread, app.id]);
+  }, [state.ui?.[app.id]?.openThread, app.id, onUi]);
   const [tab, setTab] = useState(app.tabs[0]);
   const [q, setQ] = useState("");
   const [pw, setPw] = useState("");
