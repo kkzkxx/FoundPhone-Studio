@@ -447,10 +447,26 @@ function PhoneRuntime({
                   name={
                     work.apps.find((a) => a.id === app)?.name ?? plugin.name
                   }
-                  items={[
-                    ...(work.data[app] ?? []),
-                    ...(s.messages[app] ?? []),
-                  ]}
+                  items={(() => {
+                    const authored = work.data[app] ?? [];
+                    const replies = s.messages[app] ?? [];
+                    const bySource = new Map<string, typeof replies>();
+                    const unmatched: typeof replies = [];
+                    for (const reply of replies) {
+                      const sourceId = reply.meta?.replyTo;
+                      if (sourceId && authored.some((item) => item.id === sourceId)) {
+                        const group = bySource.get(sourceId) ?? [];
+                        group.push(reply);
+                        bySource.set(sourceId, group);
+                      } else {
+                        unmatched.push(reply);
+                      }
+                    }
+                    return [
+                      ...authored.flatMap((item) => [item, ...(bySource.get(item.id) ?? [])]),
+                      ...unmatched,
+                    ];
+                  })()}
                   creator={creator}
                   state={s}
                   onRead={(id) => event("read", id)}
