@@ -3,14 +3,14 @@
   "id": "ice-cream-phone",
   "title": "冰淇淋不许吃",
   "description": "放学后的微信消息，以及一条突然出现的爸比通知。",
-  "revision": 14,
+  "revision": 15,
   "phone": {
     "owner": "郑ㅇㅇ",
     "date": "2026-11-09",
     "time": "16:20",
     "battery": 94,
     "network": "5G",
-    "wallpaper": "apple-wwdc26",
+    "wallpaper": "custom-wings",
     "passcode": "701214",
     "notifications": true
   },
