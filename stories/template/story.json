@@ -3,7 +3,7 @@
   "id": "ice-cream-phone",
   "title": "冰淇淋不许吃",
   "description": "放学后的微信消息，以及一条突然出现的爸比通知。",
-  "revision": 9,
+  "revision": 10,
   "phone": {
     "owner": "郑ㅇㅇ",
     "date": "2026-11-09",
@@ -165,7 +165,7 @@
           "hidden": true,
           "unlock": "dadReplySent",
           "meta": {
-            "image": "assets/dad-mom-car.jpg"
+            "image": "/FoundPhone-Studio/assets/_cgi-bin_mmwebwx-bin_webwxgetmsgimg__%26MsgID%3D5600451302774529018%26skey%3D%40crypt_9558f5d5_9583eecad1e28779c44b4ad50c745f3f%26mmweb_appid%3Dwx_webfilehelper.jpg"
           }
         },
         {
