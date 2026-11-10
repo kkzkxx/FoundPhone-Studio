@@ -3,7 +3,7 @@
   "id": "ice-cream-phone",
   "title": "冰淇淋不许吃",
   "description": "放学后的微信消息，以及一条突然出现的爸比通知。",
-  "revision": 8,
+  "revision": 9,
   "phone": {
     "owner": "郑ㅇㅇ",
     "date": "2026-11-09",
@@ -145,13 +145,66 @@
           "meta": {
             "quickReply": "你怎么知道的。。"
           }
+        },
+        {
+          "id": "dad-together-message",
+          "body": "因为我和你妈咪在一起呢",
+          "senderId": "dad",
+          "time": "2026-11-09 16:24",
+          "hidden": true,
+          "unlock": "dadReplySent",
+          "meta": {
+            "quickReply": "……你们一起来接我吗？"
+          }
+        },
+        {
+          "id": "dad-car-photo",
+          "body": "[图片]",
+          "senderId": "dad",
+          "time": "2026-11-09 16:24",
+          "hidden": true,
+          "unlock": "dadReplySent",
+          "meta": {
+            "image": "assets/dad-mom-car.jpg"
+          }
+        },
+        {
+          "id": "user-pickup-question",
+          "body": "……你们一起来接我吗？",
+          "senderId": "owner",
+          "time": "2026-11-09 16:25",
+          "hidden": true,
+          "unlock": "pickupQuestionSent"
+        },
+        {
+          "id": "dad-pickup-answer",
+          "body": "顺路接你",
+          "senderId": "dad",
+          "time": "2026-11-09 16:25",
+          "hidden": true,
+          "unlock": "dadPickupReplySent",
+          "meta": {
+            "quickReply": "😑"
+          }
+        },
+        {
+          "id": "user-eye-roll",
+          "body": "😑",
+          "senderId": "owner",
+          "time": "2026-11-09 16:26",
+          "hidden": true,
+          "unlock": "eyeRollSent"
         }
       ]
     }
   ],
   "content": {},
   "variables": {
-    "dadWarningSent": false
+    "dadWarningSent": false,
+    "dadReplySent": false,
+    "pickupQuestionSent": false,
+    "dadPickupReplySent": false,
+    "eyeRollSent": false
   },
   "events": [
     {
@@ -205,6 +258,91 @@
       "y": 0
     },
     {
+      "id": "dad-explains-photo",
+      "label": "回复爸比后发送合照",
+      "type": "event",
+      "event": "sendMessage",
+      "target": "dad-first-message",
+      "conditions": [],
+      "logic": "and",
+      "actions": [
+        {
+          "type": "variable",
+          "key": "dadReplySent",
+          "value": true
+        },
+        {
+          "type": "unlock",
+          "key": "dad-together-message",
+          "value": true
+        },
+        {
+          "type": "unlock",
+          "key": "dad-car-photo",
+          "value": true
+        }
+      ],
+      "next": [],
+      "once": true,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "user-asks-pickup",
+      "label": "询问是否一起来接我",
+      "type": "event",
+      "event": "sendMessage",
+      "target": "dad-together-message",
+      "conditions": [],
+      "logic": "and",
+      "actions": [
+        {
+          "type": "variable",
+          "key": "pickupQuestionSent",
+          "value": true
+        },
+        {
+          "type": "unlock",
+          "key": "user-pickup-question",
+          "value": true
+        },
+        {
+          "type": "unlock",
+          "key": "dad-pickup-answer",
+          "value": true
+        }
+      ],
+      "next": [],
+      "once": true,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "dad-says-on-way",
+      "label": "爸比回复顺路接你",
+      "type": "event",
+      "event": "sendMessage",
+      "target": "dad-pickup-answer",
+      "conditions": [],
+      "logic": "and",
+      "actions": [
+        {
+          "type": "variable",
+          "key": "dadPickupReplySent",
+          "value": true
+        },
+        {
+          "type": "unlock",
+          "key": "user-eye-roll",
+          "value": true
+        }
+      ],
+      "next": [],
+      "once": true,
+      "x": 0,
+      "y": 0
+    },
+    {
       "id": "validation-ending",
       "label": "校验路径结束",
       "type": "ending",
@@ -227,11 +365,23 @@
   ],
   "tests": [
     {
-      "name": "发送给妈咪的想吃冰淇淋消息后触发爸比通知",
+      "name": "爸比接人对话流程",
       "steps": [
         {
           "event": "sendMessage",
           "target": "mom-first-message"
+        },
+        {
+          "event": "sendMessage",
+          "target": "dad-first-message"
+        },
+        {
+          "event": "sendMessage",
+          "target": "dad-together-message"
+        },
+        {
+          "event": "sendMessage",
+          "target": "dad-pickup-answer"
         },
         {
           "event": "testOnly",
@@ -240,7 +390,11 @@
       ],
       "ending": "脚本校验完成",
       "expectUnlocked": [
-        "dad-first-message"
+        "dad-first-message",
+        "dad-together-message",
+        "dad-car-photo",
+        "dad-pickup-answer",
+        "user-eye-roll"
       ]
     }
   ]
