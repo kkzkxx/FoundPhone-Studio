@@ -450,20 +450,25 @@ function PhoneRuntime({
                   items={(() => {
                     const authored = work.data[app] ?? [];
                     const replies = s.messages[app] ?? [];
-                    const bySource = new Map<string, typeof replies>();
+                    const byAnchor = new Map<string, typeof replies>();
                     const unmatched: typeof replies = [];
                     for (const reply of replies) {
                       const sourceId = reply.meta?.replyTo;
-                      if (sourceId && authored.some((item) => item.id === sourceId)) {
-                        const group = bySource.get(sourceId) ?? [];
+                      const source = authored.find((item) => item.id === sourceId);
+                      if (source) {
+                        const preferred = source.meta?.replyAfter;
+                        const anchor = preferred && authored.some((item) => item.id === preferred)
+                          ? preferred
+                          : source.id;
+                        const group = byAnchor.get(anchor) ?? [];
                         group.push(reply);
-                        bySource.set(sourceId, group);
+                        byAnchor.set(anchor, group);
                       } else {
                         unmatched.push(reply);
                       }
                     }
                     return [
-                      ...authored.flatMap((item) => [item, ...(bySource.get(item.id) ?? [])]),
+                      ...authored.flatMap((item) => [item, ...(byAnchor.get(item.id) ?? [])]),
                       ...unmatched,
                     ];
                   })()}
