@@ -486,7 +486,7 @@ function PhoneRuntime({
                       body: text,
                       time: `${current.date || work.phone.date} ${current.time || work.phone.time}`,
                       sender: work.phone.owner,
-                      avatar: work.data.contacts?.find((item) => item.sender === work.phone.owner)?.avatar || "",
+                      avatar: work.data.contacts?.find((item) => item.id === "owner-card" || item.title === work.phone.owner)?.avatar || "",
                       outgoing: true,
                       read: true,
                       meta: { replyTo: sourceId },
