@@ -3,7 +3,7 @@
   "id": "ice-cream-phone",
   "title": "冰淇淋不许吃",
   "description": "放学后的微信消息，以及一条突然出现的爸比通知。",
-  "revision": 13,
+  "revision": 14,
   "phone": {
     "owner": "郑ㅇㅇ",
     "date": "2026-11-09",
@@ -219,6 +219,75 @@
       "target": "mom-first-message",
       "conditions": [],
       "logic": "and",
+      "actions": [],
+      "next": [
+        "delay-dad-warning"
+      ],
+      "once": true,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "dad-explains-photo",
+      "label": "回复爸比后发送合照",
+      "type": "event",
+      "event": "sendMessage",
+      "target": "dad-first-message",
+      "conditions": [],
+      "logic": "and",
+      "actions": [],
+      "next": [
+        "delay-dad-explanation"
+      ],
+      "once": true,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "user-asks-pickup",
+      "label": "询问是否一起来接我",
+      "type": "event",
+      "event": "sendMessage",
+      "target": "dad-car-photo",
+      "conditions": [],
+      "logic": "and",
+      "actions": [],
+      "next": [
+        "delay-dad-pickup"
+      ],
+      "once": true,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "validation-ending",
+      "label": "校验路径结束",
+      "type": "ending",
+      "event": "testOnly",
+      "target": "finish",
+      "conditions": [],
+      "logic": "and",
+      "actions": [
+        {
+          "type": "ending",
+          "key": "",
+          "value": "脚本校验完成"
+        }
+      ],
+      "next": [],
+      "once": true,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "id": "delay-dad-warning",
+      "label": "等待后发送：发送想吃冰淇淋后弹出爸比消息",
+      "type": "delay",
+      "event": "",
+      "target": "",
+      "delayMs": 2500,
+      "conditions": [],
+      "logic": "and",
       "actions": [
         {
           "type": "variable",
@@ -242,11 +311,12 @@
       "y": 0
     },
     {
-      "id": "dad-explains-photo",
-      "label": "回复爸比后发送合照",
-      "type": "event",
-      "event": "sendMessage",
-      "target": "dad-first-message",
+      "id": "delay-dad-explanation",
+      "label": "等待后发送：回复爸比后发送合照",
+      "type": "delay",
+      "event": "",
+      "target": "",
+      "delayMs": 2300,
       "conditions": [],
       "logic": "and",
       "actions": [
@@ -259,24 +329,22 @@
           "type": "unlock",
           "key": "dad-together-message",
           "value": true
-        },
-        {
-          "type": "unlock",
-          "key": "dad-car-photo",
-          "value": true
         }
       ],
-      "next": [],
+      "next": [
+        "delay-dad-photo"
+      ],
       "once": true,
       "x": 0,
       "y": 0
     },
     {
-      "id": "user-asks-pickup",
-      "label": "询问是否一起来接我",
-      "type": "event",
-      "event": "sendMessage",
-      "target": "dad-car-photo",
+      "id": "delay-dad-pickup",
+      "label": "等待后发送：询问是否一起来接我",
+      "type": "delay",
+      "event": "",
+      "target": "",
+      "delayMs": 2500,
       "conditions": [],
       "logic": "and",
       "actions": [
@@ -302,18 +370,19 @@
       "y": 0
     },
     {
-      "id": "validation-ending",
-      "label": "校验路径结束",
-      "type": "ending",
-      "event": "testOnly",
-      "target": "finish",
+      "id": "delay-dad-photo",
+      "label": "文字发出两秒后发送照片",
+      "type": "delay",
+      "event": "",
+      "target": "",
+      "delayMs": 2000,
       "conditions": [],
       "logic": "and",
       "actions": [
         {
-          "type": "ending",
-          "key": "",
-          "value": "脚本校验完成"
+          "type": "unlock",
+          "key": "dad-car-photo",
+          "value": true
         }
       ],
       "next": [],
@@ -331,12 +400,21 @@
           "target": "mom-first-message"
         },
         {
+          "advanceMs": 3000
+        },
+        {
           "event": "sendMessage",
           "target": "dad-first-message"
         },
         {
+          "advanceMs": 5000
+        },
+        {
           "event": "sendMessage",
           "target": "dad-car-photo"
+        },
+        {
+          "advanceMs": 3000
         },
         {
           "event": "sendMessage",
